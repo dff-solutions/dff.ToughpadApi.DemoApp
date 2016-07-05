@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: shared/dff.log.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: shared/dff.log.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>    /**
+     * @namespace dff/log
+     */
+    dff.namespace('dff.log');
+
+    /**
+     * Enumeration for logging types
+     * @name Logtype
+     * @memberOf dff/log
+     * @readOnly
+     * @enum {string}
+     *
+     */
+     dff.define('dff.log.Logtype', {
+         /** LOG */
+         LOG: "LOG",
+         DEBUG: "DEBUG",
+         INFO: "INFO",
+         WARN: "WARN",
+         ERROR: "ERROR"
+     });
+
+     /**
+      * Model for loglines
+      *
+      * @name Logline
+      * @memberOf dff/log
+      * @constructor
+      *
+      * @param {Logtype} type Type of log.
+      * @param {Object} content Any serializable content to log.
+      * @param {Date} ts Timestamp for logline.
+      */
+    dff.define('dff.log.Logline', function (type, content, ts) {
+        this.type = type;
+        this.content = content;
+        this.timestamp = ts;
+    });
+
+    /**
+     * A wrapper to log messages.
+     *
+     * @name LoggingService
+     * @memberOf dff/log
+     * @constructor
+     *
+     * @param {object} log A log object that defines functions for
+     * log, debug, info, warn, error.
+     * Default is console.
+     * @param {Array} interceptors Interceptors that are called to handle logging.
+     * @param {Object} DateTimeService Service to get current date for logline timestamp.
+     */
+    dff.define('dff.log.LoggingService', function (log, interceptors, DateTimeService) {
+        this.logObject = log || console;
+        this.logInterceptors = interceptors || [];
+        this.dateTimeService = DateTimeService;
+        this.notificationPromise = Promise.resolve();
+    });
+
+    /**
+     * Concatenates array values separated by blanks. Calls the toString function of each value.
+     *
+     * @name concatArgs
+     * @memberOf dff/log.LoggingService
+     * @function
+     * @static
+     *
+     * @param {Array} args Values to concatenate.
+     * @returns {string} Concatenated values.
+     */
+    dff.log.LoggingService.concatArgs = function (args) {
+        var tmpText = "";
+
+        for (var i = 0; i &lt; args.length; i++) {
+            if (i > 0) {
+                tmpText += " ";
+            }
+
+            if (args[i] &amp;&amp; typeof args[i].toString() === 'function') {
+                tmpText = tmpText.concat(args[i].toString());
+            }
+            else {
+                tmpText += args[i];
+            }
+        }
+
+        return tmpText;
+    };
+
+    /**
+     * Adds an interceptor that should be called when a message is logged.
+     * @name addInterceptor
+     * @memberOf dff/log.LoggingService
+     * @function
+     * @instance
+     *
+     * @param {Object} interceptor Interceptorto to call on log
+     */
+    dff.log.LoggingService.prototype.addInterceptor = function (interceptor) {
+        this.logInterceptors.push(interceptor);
+    };
+
+    /**
+     * Applies all arguments to the log function of the specified log object
+     * and notifies all interceptors.
+     *
+     * @name log
+     * @memberOf dff/log.LoggingService
+     * @function
+     * @instance
+     *
+     * @return {Promise} A Promise that resolves when all interceptors have finished.
+     */
+    dff.log.LoggingService.prototype.log = function () {
+        this.logObject.log.apply(this.logObject, arguments);
+        return this.notifyInterceptors(dff.log.Logtype.LOG, arguments);
+    };
+
+    /**
+     * Applies all arguments to the info function of the specified log object
+     * and notifies all interceptors.
+     *
+     * @name info
+     * @memberOf dff/log.LoggingService
+     * @function
+     * @instance
+     *
+     * @return {Promise} A Promise that resolves when all interceptors have finished.
+     */
+    dff.log.LoggingService.prototype.info = function () {
+        this.logObject.info.apply(this.logObject, arguments);
+        return this.notifyInterceptors(dff.log.Logtype.INFO, arguments);
+    };
+
+    /**
+     * Applies all arguments to the debug function of the specified log object
+     * and notifies all interceptors.
+     *
+     * @name debug
+     * @memberOf dff/log.LoggingService
+     * @function
+     * @instance
+     *
+     * @return {Promise} A Promise that resolves when all interceptors have finished.
+     */
+    dff.log.LoggingService.prototype.debug = function () {
+        this.logObject.debug.apply(this.logObject, arguments);
+        return this.notifyInterceptors(dff.log.Logtype.DEBUG, arguments);
+    };
+
+    /**
+     * Applies all arguments to the warn function of the specified log object
+     * and notifies all interceptors.
+     *
+     * @name warn
+     * @memberOf dff/log.LoggingService
+     * @function
+     * @instance
+     *
+     * @return {Promise} A Promise that resolves when all interceptors have finished.
+     */
+    dff.log.LoggingService.prototype.warn = function () {
+        this.logObject.warn.apply(this.logObject, arguments);
+        return this.notifyInterceptors(dff.log.Logtype.WARN, arguments);
+    };
+
+    /**
+     * Applies all arguments to the error function of the specified log object
+     * and notifies all interceptors.
+     *
+     * @name error
+     * @memberOf dff/log.LoggingService
+     * @function
+     * @instance
+     *
+     * @return {Promise} A Promise that resolves when all interceptors have finished.
+     */
+    dff.log.LoggingService.prototype.error = function () {
+        this.logObject.error.apply(this.logObject, arguments);
+        return this.notifyInterceptors(dff.log.Logtype.ERROR, arguments);
+    };
+
+    /**
+     * Notifies all interceptors with a new logline. Interceptors are chained by promises.
+     *
+     * @name notifyInterceptors
+     * @memberOf dff/log.LoggingService
+     * @function
+     * @instance
+     *
+     * @param {dff.log.Logtype} type Tpe of log
+     * @param args Arguments passed to log function.
+     * @returns {Promise} Promise thats resolves when all interceptors are finished.
+     */
+    dff.log.LoggingService.prototype.notifyInterceptors = function (type, args) {
+        var self = this;
+        var content = dff.log.LoggingService.concatArgs(args);
+        var timestamp = this.dateTimeService.getDate();
+
+        var logline = new dff.log.Logline(type, content, timestamp);
+
+        this.notificationPromise = this.notificationPromise
+            .then(function () {
+                return self.logInterceptors.reduce(function (prev, cur) {
+                    return prev
+                        .then(function () {
+                            return cur.log(logline);
+                        });
+                }, Promise.resolve("reduce interceptors"));
+            });
+
+        return this.notificationPromise;
+    };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="dff_app_cordova_common.PluginService.html">PluginService</a></li><li><a href="dff_app_cordova_toughpadapi.IncomingMessageLogger.html">IncomingMessageLogger</a></li><li><a href="dff_app_cordova_toughpadapi.ToughpadApiService.html">ToughpadApiService</a></li><li><a href="dff_app_cordova_wifi_manager.NetworkStateLogger.html">NetworkStateLogger</a></li><li><a href="dff_app_cordova_wifi_manager.ScanResultsLogger.html">ScanResultsLogger</a></li><li><a href="dff_app_cordova_wifi_manager.WifiMangerService.html">WifiMangerService</a></li><li><a href="dff_app_cordova_wifi_manager.WifiStateLogger.html">WifiStateLogger</a></li><li><a href="dff_app_log.LoggingStoreInterceptor.html">LoggingStoreInterceptor</a></li><li><a href="dff_app_packagepay.EndOfTour.html">EndOfTour</a></li><li><a href="dff_app_packagepay.IncomingMessageLogger.html">IncomingMessageLogger</a></li><li><a href="dff_app_packagepay.Logistician.html">Logistician</a></li><li><a href="dff_app_packagepay.Package.html">Package</a></li><li><a href="dff_app_packagepay.PackagepayService.html">PackagepayService</a></li><li><a href="dff_app_packagepay.Payment.html">Payment</a></li><li><a href="dff_app_packagepay.ServiceConnectionLogger.html">ServiceConnectionLogger</a></li><li><a href="dff_datetime.DateTimeService.html">DateTimeService</a></li><li><a href="dff_dom.MutationObserverService.html">MutationObserverService</a></li><li><a href="dff_gps_tools.ToolsService.html">ToolsService</a></li><li><a href="dff_idb.dff.idb.IDBError.html">IDBError</a></li><li><a href="dff_idb.ObjectStore.html">ObjectStore</a></li><li><a href="dff_iso_3166.CodeService.html">CodeService</a></li><li><a href="dff_log.LoggingService.html">LoggingService</a></li><li><a href="dff_log.Logline.html">Logline</a></li></ul><h3>Namespaces</h3><ul><li><a href="dff.html">dff</a></li><li><a href="dff_app_cordova_common.html">dff/app/cordova/common</a></li><li><a href="dff_app_cordova_toughpadapi.html">dff/app/cordova/toughpadapi</a></li><li><a href="dff_app_cordova_wifi_manager.html">dff/app/cordova/wifi/manager</a></li><li><a href="dff_app_log.html">dff/app/log</a></li><li><a href="dff_app_packagepay.html">dff/app/packagepay</a></li><li><a href="dff_datetime.html">dff/datetime</a></li><li><a href="dff_dom.html">dff/dom</a></li><li><a href="dff_gps_tools.html">dff/gps/tools</a></li><li><a href="dff_idb.html">dff/idb</a></li><li><a href="dff_iso_3166.html">dff/iso/3166</a></li><li><a href="dff_log.html">dff/log</a></li><li><a href="dff_util.html">dff/util</a></li><li><a href="dff_util_guid.html">dff/util/guid</a></li></ul><h3>Global</h3><ul><li><a href="global.html#dffIdbIndexedDBService">dffIdbIndexedDBService</a></li><li><a href="global.html">getObjectStore</a></li><li><a href="global.html#LOG">LOG</a></li><li><a href="global.html#MessageBoxSentShuttlesWorker">MessageBoxSentShuttlesWorker</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Jul 05 2016 16:50:32 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

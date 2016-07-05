@@ -1,0 +1,31 @@
+{
+  "name": "dff-web-core",
+  "homepage": "https://github.com/frankkoenigstein/dff-web-core",
+  "authors": [
+    "Frank Koenigstein <frank.koenigstein@dff-solutions.de>"
+  ],
+  "description": "dff web sdk core components",
+  "main": "dff.web.core.js",
+  "keywords": [
+    "dff",
+    "core",
+    "web"
+  ],
+  "license": "GPL",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "9eea629693",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "9eea62969359cdd4d4c1f773b9f3dea22a4d8a9a"
+  },
+  "_source": "https://github.com/dff-solutions/dff-web-core.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/dff-solutions/dff-web-core.git"
+}

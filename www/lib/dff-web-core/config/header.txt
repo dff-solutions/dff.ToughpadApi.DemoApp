@@ -1,0 +1,6 @@
+/**
+ * <%= pkg.name %> - v<%= pkg.version %> - <%= date %>
+ * <%= pkg.homepage %>
+ *
+ * Copyright (c) 2015 dff solutions GmbH (http://www.dff-solutions.de)
+ */

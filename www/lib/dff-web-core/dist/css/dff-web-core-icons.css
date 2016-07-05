@@ -1,0 +1,41 @@
+@font-face {
+  font-family: "dff-icons";
+  src: url('../fonts/dff-icons.eot');
+  src: url('../fonts/dff-icons.eot?#iefix') format('eot'),
+    url('../fonts/dff-icons.woff') format('woff'),
+    url('../fonts/dff-icons.ttf') format('truetype'),
+    url('../fonts/dff-icons.svg#dff-icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.dff-icon:before {
+  display: inline-block;
+  font-family: "dff-icons";
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dff-icon-lg {
+  font-size: 1.3333333333333333em;
+  line-height: 0.75em;
+  vertical-align: -15%;
+}
+.dff-icon-2x { font-size: 2em; }
+.dff-icon-3x { font-size: 3em; }
+.dff-icon-4x { font-size: 4em; }
+.dff-icon-5x { font-size: 5em; }
+.dff-icon-fw {
+  width: 1.2857142857142858em;
+  text-align: center;
+}
+
+.dff-icon-call-success-mailbox:before { content: "\EA01" }
+.dff-icon-call-success:before { content: "\EA02" }
+.dff-icon-call-trial:before { content: "\EA03" }
+.dff-icon-stop-exception:before { content: "\EA04" }
+.dff-icon-stop-finished:before { content: "\EA05" }
+.dff-icon-stop-open:before { content: "\EA06" }
