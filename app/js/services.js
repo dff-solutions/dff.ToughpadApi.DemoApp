@@ -11,6 +11,31 @@ angular
             });
         };
 
+        self.clear = function () {
+            self.data = undefined;
+        };
+
+        return self;
+    })
+    .factory('Readers', function ($rootScope, dffToughpadApiService) {
+        var self = {};
+
+        self.readers = [];
+
+        self.getReaders = function () {
+            dffToughpadApiService
+                .getBarcodeReaders()
+                .then(function (readers) {
+                    $rootScope.$apply(function () {
+                        self.readers = readers || [];
+                    });
+                });
+        };
+
+        self.get = function (readerID) {
+            return self.readers[readerID];
+        };
+
         return self;
     })
     .config(function (dffToughpadApiServiceProvider) {

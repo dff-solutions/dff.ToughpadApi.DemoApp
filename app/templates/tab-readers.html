@@ -1,0 +1,13 @@
+<ion-view view-title="Readers">
+  <ion-content>
+    <ion-list>
+      <ion-item
+        ng-repeat="reader in Readers.readers"
+        type="item-text-wrap"
+        href="#/tab/readers/{{ $index }}">
+        <h2>{{ reader.deviceName }}</h2>
+        <p>{{ reader.barcodeType }}</p>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

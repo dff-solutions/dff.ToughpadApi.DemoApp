@@ -49,6 +49,10 @@
   "cordovaPlugins": [
     {
       "locator": "../dff.CordovaPlugin.ToughpadApi/"
+    },
+    {
+      "locator": "../dff.CordovaPlugin.ToughpadApi",
+      "id": "com.dff.cordova.plugin.toughpadapi"
     }
   ],
   "cordovaPlatforms": []
